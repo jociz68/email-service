@@ -33,9 +33,14 @@ const router = emailService.createRouter(config)
 app.use('/email', router)
 ```
 
-## Invoking
+## Invoking with HTTP POST
 
-Invoking the service is as simple as doing an HTTP POST request to `{baseURL}/send`. The `baseURL` depends on how you are deploying the service. For example if you are running it as an express router mounted in `/email` in a server running at `127.0.0.1:3000` the URL will be: `http(s)://127.0.0.1:3000/email/send`.
+Invoking the service is as simple as doing an HTTP POST request to `{baseURL}/send`. The `baseURL` depends on how you are deploying the service. For example if you are running it as an express router mounted in `/email` in a server running at `127.0.0.1:3000` the URL will be: `http(s)://127.0.0.1:3000/email/send`. 
+
+## Invoking from RabbitMQ 
+The service can be called up from `{src/rabbit}` e.g. `{node src/rabbit}`. In this case, it supports sending request via RabbitMQ message broker. The message client shall send the request to the queue of rabbitmq server set in environment.  
+
+## JSON body
 
 You need to send a JSON body with the following structure:
 
@@ -128,6 +133,11 @@ This is the list of available configuration options:
 | `SMTP_USER` | SMTP user from which emails are sent when using SMTP |
 | `SMTP_PASS` | SMTP password from which emails are sent when using SMTP |
 | `TEMPLATES_DIR` | Absolute path to directory where templates will be found |
+| `RABBITMQ_QUEUE` | Name of RabbitMQ queue which it will receive message from. In this case, entry point is at `{src/rabbit}`|
+| `RABBITMQ_URL` | URL of RabbitMQ server e.g. amqp://localhost |
+| `RABBITMQ_DURABLE_QUEUE` | Durability of the queue ("true"/"false") |
+
+
 
 ## Templates
 
