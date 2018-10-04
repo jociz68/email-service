@@ -1,0 +1,15 @@
+
+<style>
+    h1 { color: #777 }
+  </style>
+  <h1>Welcome <%= user.name %></h1>
+  <p>Cheers from Drunkenness Advisory</p>
+  <p>Some thoughts from a smart buddy</p>
+  <ul>
+    <% drinks.forEach(function(drink) { %>
+        <li><%= drink.name %> - <%= drink.drunkness %></li>
+    <% }); %>
+</ul>
+
+<p class="text-center text-muted"><%= Note %></p>
+<%- include('footer'); -%>
