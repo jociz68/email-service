@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-require('./setenv');
+// require('./setenv');
 var amqp = require('amqplib/callback_api');
 const bodyParser = require('body-parser')
 const winston = require('winston')
