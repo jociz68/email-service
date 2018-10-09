@@ -9,3 +9,6 @@ process.env['SMTP_HOST'] = '10.10.10.78';
 process.env['SMTP_PORT'] = '25';
 process.env['SMTP_USER'] = 'testuser';
 process.env['SMTP_PASS'] = 'testpass';
+process.env['PUBSUB_GOOGLE_PROJECT_ID'] = 'testmailer-218909';
+process.env['PUBSUB_TOPIC_NAME'] = 'test_topic';
+process.env['PUBSUB_SUBSCRIPTION_NAME'] = 'test_sub';

@@ -15,6 +15,12 @@
             "request": "launch",
             "name": "Launch RabbitMQ",
             "program": "${workspaceFolder}\\src\\rabbit.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch PubSub",
+            "program": "${workspaceFolder}\\src\\pubsub.js"
         }
     ]
 }
