@@ -55,10 +55,18 @@ You need to send a JSON body with the following structure:
   },
   "emailOptions": {
     "from": "Judy <judy@example.com>",
-    "to": "John <john@example.com>"
+    "to": "John <john@example.com>",
+    "attachments": [
+            {
+                "filename": "notes.txt",
+                "content": "Some notes about this e-mail",
+                "contentType": "text/plain"
+            }]
   }
 }
 ```
+The "attachments" is optional and supported in "emailOptions". This element may contain a list of attachments. For more details about this topic, check out the documentation at [nodemailer](https://nodemailer.com/message/attachments/). 
+
 
 If your `{lang}/{templateName}-body-html.ejs` template has this content:
 

@@ -3,8 +3,22 @@
 // require('./setenv');
 var amqp = require('amqplib/callback_api');
 const bodyParser = require('body-parser')
-const winston = require('winston')
 const Joi = require('joi')
+
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, printf } = format;
+const myFormat = printf(info => {
+  var messageJson = JSON.stringify(info.message)
+  return `${info.timestamp} [${info.label}] ${info.level}: ${messageJson}`;
+});
+const logger = createLogger({
+  format: combine(
+    label({ label: 'mailer' }),
+    timestamp(),
+    myFormat
+  ),
+  transports: [new transports.Console()]
+})
 
 const schema = Joi.object().keys({
   templateName: Joi.string().required(),
@@ -20,11 +34,11 @@ amqp.connect(env('RABBITMQ_URL'), function (err, conn) {
 
     const service = require('./email')(env)
     var queue = env('RABBITMQ_QUEUE');
-    
-    var durableQueue =  env('RABBITMQ_DURABLE_QUEUE') == 'true';
+
+    var durableQueue = env('RABBITMQ_DURABLE_QUEUE') == 'true';
     ch.assertQueue(queue, { durable: durableQueue });
     ch.prefetch(1);
-    winston.info(" [*] Waiting for messages in " + queue + " message queue. To exit press CTRL+C");
+    logger.info(" [*] Waiting for messages in '" + queue + "' message queue. To exit press CTRL+C");
 
     ch.consume(queue, function (msg) {
 
@@ -45,16 +59,14 @@ amqp.connect(env('RABBITMQ_URL'), function (err, conn) {
         } = jsonPayload
         var prom = service.sendTemplatedEmail(emailOptions, templateName, templateOptions, language)
           .then(response => {
-            winston.info(response)
-            // ch.ack(msg);
+            logger.info(response)
           })
           .catch(err => {
             throw (err)
           })
-
-        winston.info(" [x] processed a message");
+        logger.info("processed a message");
       } catch (err) {
-        winston.error(err)
+        logger.error(err)
       }
     }, { noAck: true });
   });

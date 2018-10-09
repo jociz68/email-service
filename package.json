@@ -14,7 +14,7 @@
     "start-dev": "nodemon",
     "test": "MICROSERVICE_PORT=3001 ava --verbose --fail-fast",
     "lint": "standard",
-    "start-rabbit":"node src/rabbit.js",
+    "start-rabbit": "node src/rabbit.js",
     "debug": "node --nolazy --inspect-brk=9229 src/rabbit.js"
   },
   "betterScripts": {

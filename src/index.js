@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+// require('./setenv');
 const express = require('express')
 const bodyParser = require('body-parser')
 const winston = require('winston')
