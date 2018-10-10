@@ -40,6 +40,9 @@ Invoking the service is as simple as doing an HTTP POST request to `{baseURL}/se
 ## Invoking from RabbitMQ 
 The service can be called up from `{src/rabbit}` e.g. `{node src/rabbit}`. In this case, it supports sending request via RabbitMQ message broker. The message client shall send the request to the queue of rabbitmq server set in environment.  
 
+## Invoking from Google PubSub 
+The service can be called up from `{src/pubsub}` e.g. `{node src/pubsub}`. In this case, it supports sending request via Google PubSub message broker. The message client shall send the request to the PubSub topic set in environment.  
+
 ## JSON body
 
 You need to send a JSON body with the following structure:
@@ -141,7 +144,7 @@ This is the list of available configuration options:
 | `SMTP_SECURE` | SMTP TLS from which emails are sent when using SMTP ("true"/"false") |
 | `SMTP_USER` | SMTP user from which emails are sent when using SMTP |
 | `SMTP_PASS` | SMTP password from which emails are sent when using SMTP |
-| `SMTP_POOL` | Set to true to use pooled connections (https://nodemailer.com/smtp/pooled/) |
+| `SMTP_POOL` | Set to true to use pooled connections  ("true"/"false")  (https://nodemailer.com/smtp/pooled/) |
 | `SMTP_RATELIMIT` | Limit the message count to be sent in a second (https://nodemailer.com/smtp/pooled/) |
 
 This is the list of addtional configuration options when it is started up with rabbit:
