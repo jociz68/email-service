@@ -45,4 +45,4 @@ ENV PUBSUB_SVC_TOPIC_NAME=svc_test_topic2
 ENV PUBSUB_REPLY_TOPIC_NAME=rely_test_topic2
 ENV PUBSUB_SUBSCRIPTION_NAME=new_test_sub2
 
-CMD [ "npm", "run", "start-rabbit" ]
+CMD [ "npm", "run", "start-pubsub" ]
