@@ -40,65 +40,26 @@ const pubsubClient = new PubSub({
 });
 
 
-// Creates the new topic
-pubsubClient
-  .createTopic(topicName)
-  .then(results => {
-    const topic = results[0];
-    console.log(`Topic ${topic.name} created.`);
-  })
-  .then(sync => {
-
-  })
-  .catch(err => {
-    console.error('ERROR:', err);
-  });
-
-pubsubClient
-  .topic(topicName)
-  .createSubscription(subscriptionName)
-  .then(results => {
-    const subscription = results[0];
-    console.log(`Subscription ${subscriptionName} created.`);
-  })
-  .then(sync => {
-
-  })
-  .catch(err => {
-    console.error('ERROR:', err);
-  });
-
-  function trimChar(string, charToRemove) {
-    while(string.charAt(0)==charToRemove) {
-        string = string.substring(1);
-    }
-
-    while(string.charAt(string.length-1)==charToRemove) {
-        string = string.substring(0,string.length-1);
-    }
-
-    return string;
-}
 function listenForMessages(subscriptionName, timeout) {
-
-  // References an existing subscription
+  const service = require('./email')(env)
   const subscription = pubsubClient.subscription(subscriptionName);
-
-  // Create an event handler to handle messages
+  
   let messageCount = 0;
+  let succeededMessageCount = 0;
+  let failedMessageCount = 0;
   const messageHandler = message => {
-    console.log(`Received message ${message.id}:`);
-    console.log(`\tData: ${message.data}`);
-    console.log(`\tAttributes: ${message.attributes}`);
+    logger.info(`Received message id: ${message.id}`);
+    logger.info(`Data received: ${message.data}`);
     messageCount += 1;
 
     try {
+      logger.info(`total count: ${messageCount} succeeded message count: ${succeededMessageCount} failed message count: ${failedMessageCount}`);
       var payload = message.data.toString();
-      var trimed = trimChar(payload,"'");
-      var jsonPayload = JSON.parse(trimed);
+      var jsonPayload = JSON.parse(payload);
       const result = Joi.validate(jsonPayload, schema)
 
       if (result.error) {
+        failedMessageCount += 1;
         throw (result.error)
       }
       const {
@@ -109,26 +70,47 @@ function listenForMessages(subscriptionName, timeout) {
       } = jsonPayload
       var prom = service.sendTemplatedEmail(emailOptions, templateName, templateOptions, language)
         .then(response => {
+          succeededMessageCount += 1;
           logger.info(response)
+          logger.info(`Processed a message id: ${message.id}, total count: ${messageCount} succeeded message count: ${succeededMessageCount}`);
         })
         .catch(err => {
+          failedMessageCount += 1;
           throw (err)
         })
-      logger.info("processed a message");
     } catch (err) {
       logger.error(err)
     }
-
     // "Ack" (acknowledge receipt of) the message
     message.ack();
   };
-
   // Listen for new messages until timeout is hit
   subscription.on(`message`, messageHandler);
-  // setTimeout(() => {
-  //   subscription.removeListener('message', messageHandler);
-  //   console.log(`${messageCount} message(s) received.`);
-  // }, timeout * 1000);
 }
 
-listenForMessages(subscriptionName);
+pubsubClient
+  .createTopic(topicName)
+  .then(results => {
+    const topic = results[0];
+    logger.info(`Topic ${topic.name} created.`);
+  })
+  .catch(err => {
+    logger.error(err);
+  })
+  .then(() => {
+    pubsubClient
+      .topic(topicName)
+      .createSubscription(subscriptionName, {
+        ackDeadlineSeconds: 90
+      })
+      .then(results => {
+        const subscription = results[0];
+        logger.info(`Subscription ${subscriptionName} created.`);
+      })
+      .catch(err => {
+        logger.error(err);
+      });
+  })
+  .then(() => {
+    listenForMessages(subscriptionName);
+  })
