@@ -62,7 +62,8 @@ You need to send a JSON body with the following structure:
                 "content": "Some notes about this e-mail",
                 "contentType": "text/plain"
             }]
-  }
+  },
+  "Uid":"25e57910-2f45-49d7-b066-1eaeadba0021" 
 }
 ```
 The "attachments" is optional and supported in "emailOptions". This element may contain a list of attachments. For more details about this topic, check out the documentation at [nodemailer](https://nodemailer.com/message/attachments/). 
@@ -124,7 +125,7 @@ This is the list of available configuration options:
 
 | Variable | Description |
 | --- | --- |
-| `MICROSERVICE_PORT` | Port number for the standalone application. If not specified it will run in a random port |
+| `MICROSERVICE_PORT` | Port number for the standalone application. If not specified it will run in a random port. It is used for RestFulAPI service, entry point is at `{src/index}` |
 | `DEFAULT_FROM` | Default email sender if a `from` parameter is not specified |
 | `DEFAULT_LANGUAGE` | Default language to be used if a `language` is not specified. Defaults to `en` |
 | `TRANSPORT` | Third-party service to be used to send the email. Supported values: [`ses`, `sendgrid`, `postmark`, `mailgun`, 'smtp'] for production; `stub` for testing |
@@ -140,10 +141,27 @@ This is the list of available configuration options:
 | `SMTP_SECURE` | SMTP TLS from which emails are sent when using SMTP ("true"/"false") |
 | `SMTP_USER` | SMTP user from which emails are sent when using SMTP |
 | `SMTP_PASS` | SMTP password from which emails are sent when using SMTP |
-| `TEMPLATES_DIR` | Absolute path to directory where templates will be found |
-| `RABBITMQ_QUEUE` | Name of RabbitMQ queue which it will receive message from. In this case, entry point is at `{src/rabbit}`|
+| `SMTP_POOL` | Set to true to use pooled connections (https://nodemailer.com/smtp/pooled/) |
+| `SMTP_RATELIMIT` | Limit the message count to be sent in a second (https://nodemailer.com/smtp/pooled/) |
+
+This is the list of addtional configuration options when it is started up with rabbit:
+
+| Variable | Description |
+| --- | --- |
+| `RABBITMQ_QUEUE` | Name of RabbitMQ queue from which it will receive message. In this case, entry point is at `{src/rabbit}`|
 | `RABBITMQ_URL` | URL of RabbitMQ server e.g. amqp://localhost |
 | `RABBITMQ_DURABLE_QUEUE` | Durability of the queue ("true"/"false") |
+
+This is the list of addtional configuration options when it is started up with pubsub:
+
+| Variable | Description |
+| --- | --- |
+| `PUBSUB_GOOGLE_PROJECT_ID` | Google Project Identifier. In this case, entry point is at `{src/pubsub}` |
+| `PUBSUB_SVC_TOPIC_NAME` | Google PubSub topic from which it will receive message |
+| `PUBSUB_REPLY_TOPIC_NAME` | Google PubSub topic to which it will send acknowledge reply message |
+| `PUBSUB_SUBSCRIPTION_NAME` | Google PubSub subscription on which it will receive message |
+
+
 
 
 

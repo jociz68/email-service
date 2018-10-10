@@ -41,32 +41,11 @@ module.exports = env => {
         port: env('SMTP_PORT'),
         secure: (env('SMTP_SECURE') == 'true'), // eslint-disable-line eqeqeq
         ignoreTLS: (env('SMTP_SECURE') == 'false'), // eslint-disable-line eqeqeq
+        pool: (env('SMTP_POOL') == 'true'),
+        rateLimit: env('SMTP_RATELIMIT'),
         auth: {
           user: env('SMTP_USER'),
           pass: env('SMTP_PASS')
-        }
-      })
-      case 'gmail':
-      return nodemailer.createTransport({
-        service: 'gmail', 
-        host: 'smtp.gmail.com',
-        auth: {
-          user: env('SMTP_USER'),
-          pass: env('SMTP_PASS')
-        }
-      })
-      case '365':
-      return nodemailer.createTransport({
-        host: 'smtp.office365.com',
-        port: 587,
-        // eslint-disable-line eqeqeq
-        secureConnection: false,
-        auth: {
-          user: env('SMTP_USER'),
-          pass: env('SMTP_PASS')
-        },
-        tls: {
-            ciphers: 'SSLv3'
         }
       })
     case 'stub':
